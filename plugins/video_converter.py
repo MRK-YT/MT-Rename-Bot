@@ -53,7 +53,7 @@ async def convert_to_video(bot, update):
                     [ InlineKeyboardButton(text="🔔Join My Updates Channel🔔", url=f"https://t.me/{update_channel}")]
               ])
             )
-            return  
+            return
     #TRChatBase(update.from_user.id, update.text, "c2v")
     if update.reply_to_message is not None:
         
@@ -81,21 +81,11 @@ async def convert_to_video(bot, update):
                 chat_id=update.chat.id,
                 message_id=a.message_id
             )
-            # don't care about the extension
-           # await bot.edit_message_text(
-              #  text=Translation.UPLOAD_START,
-             #   chat_id=update.chat.id,
             #    message_id=a.message_id
           #  )
             logger.info(the_real_download_location)
-            # get the correct width, height, and duration for videos greater than 10MB
-            # ref: message from @Mo_Tech_Group
-            width = 0
-            height = 0
-            duration = 0
             metadata = extractMetadata(createParser(the_real_download_location))
-            if metadata.has("duration"):
-                duration = metadata.get('duration').seconds
+            duration = metadata.get('duration').seconds if metadata.has("duration") else 0
             thumb_image_path = Config.DOWNLOAD_LOCATION + "/" + str(update.from_user.id) + ".jpg"
             if not os.path.exists(thumb_image_path):
                 thumb_image_path = await take_screen_shot(
@@ -109,10 +99,8 @@ async def convert_to_video(bot, update):
             logger.info(thumb_image_path)
             # 'thumb_image_path' will be available now
             metadata = extractMetadata(createParser(thumb_image_path))
-            if metadata.has("width"):
-                width = metadata.get("width")
-            if metadata.has("height"):
-                height = metadata.get("height")
+            width = metadata.get("width") if metadata.has("width") else 0
+            height = metadata.get("height") if metadata.has("height") else 0
             # get the correct width, height, and duration for videos greater than 10MB
             # resize image
             # ref: https://t.me/PyrogramChat/44663
